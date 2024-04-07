@@ -4,6 +4,7 @@
  */
 package gestionaproductos;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -185,12 +186,30 @@ public class GestorProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioKeyTyped
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        String nombreProducto = txtNombreProducto.getText();
+        String categoria = (String)comboCategoria.getSelectedItem();
+        
+        
+        if(nombreProducto.isBlank() ||
+                categoria.isBlank() ||
+                txtPrecio.getText().isBlank()
+          ){
+            JOptionPane.showMessageDialog(this, "Tenés que ingresar datos en todos los campos");
+            return;
+        }
+        double precio = Double.parseDouble(txtPrecio.getText());
+        if(precio <= 0){
+            JOptionPane.showMessageDialog(this, "El precio tiene que ser mayor que cero");
+        }
+        
         cargarDatos(new Producto(
-                                    txtNombreProducto.getText(),
-                                    (String)comboCategoria.getSelectedItem(),
-                                    Double.parseDouble(txtPrecio.getText())
+                                    nombreProducto,
+                                    categoria,
+                                    precio)
                     
-        ));
+        );
+        
+        resetearCampos();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**
@@ -255,5 +274,11 @@ public class GestorProductos extends javax.swing.JFrame {
                                     producto.getPrecio()}
         );
         
+    }
+    
+    private void resetearCampos(){
+        txtNombreProducto.setText("");
+        comboCategoria.setSelectedIndex(0);
+        txtPrecio.setText("");
     }
 }
