@@ -174,6 +174,7 @@ public class GestorProductos extends javax.swing.JFrame {
             for(int i=0; i < txtActual.length(); i++){
                 if(txtActual.charAt(i) == '.'){
                     evt.consume();
+                    return;
                 }
             }
             
