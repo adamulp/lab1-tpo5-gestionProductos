@@ -4,17 +4,21 @@
  */
 package gestionaproductos;
 
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author adam
  */
 public class GestorProductos extends javax.swing.JFrame {
+    private DefaultTableModel modelo = new DefaultTableModel();
 
     /**
      * Creates new form GestorProductos
      */
     public GestorProductos() {
         initComponents();
+        armarCabecera();
     }
 
     /**
@@ -47,6 +51,11 @@ public class GestorProductos extends javax.swing.JFrame {
         lblCategoria.setText("Categoría:");
 
         btnAgregar.setText("Agregar Producto");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
 
         lblNombre.setText("Nombre del Producto:");
 
@@ -166,6 +175,10 @@ public class GestorProductos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtPrecioKeyTyped
 
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -213,4 +226,11 @@ public class GestorProductos extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombreProducto;
     private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
+    
+    private void armarCabecera(){
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Categoría");
+        modelo.addColumn("Precio");
+        tablaProductos.setModel(modelo);
+    }
 }
