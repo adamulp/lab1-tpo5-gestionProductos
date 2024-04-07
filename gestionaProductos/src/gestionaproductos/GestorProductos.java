@@ -57,6 +57,11 @@ public class GestorProductos extends javax.swing.JFrame {
                 txtPrecioActionPerformed(evt);
             }
         });
+        txtPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioKeyTyped(evt);
+            }
+        });
 
         tablaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -149,6 +154,17 @@ public class GestorProductos extends javax.swing.JFrame {
     private void txtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPrecioActionPerformed
+
+    private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
+        char caracter = evt.getKeyChar();
+        if(caracter == '.'){
+            return;
+        }
+        
+        if(!Character.isDigit(caracter)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtPrecioKeyTyped
 
     /**
      * @param args the command line arguments
