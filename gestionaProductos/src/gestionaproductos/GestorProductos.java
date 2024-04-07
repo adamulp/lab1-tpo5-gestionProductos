@@ -166,7 +166,16 @@ public class GestorProductos extends javax.swing.JFrame {
 
     private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
         char caracter = evt.getKeyChar();
+        String txtActual;
+                
         if(caracter == '.'){
+            txtActual = txtPrecio.getText();
+            for(int i=0; i < txtActual.length(); i++){
+                if(txtActual.charAt(i) == '.'){
+                    evt.consume();
+                }
+            }
+            
             return;
         }
         
@@ -176,7 +185,12 @@ public class GestorProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioKeyTyped
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        
+        cargarDatos(new Producto(
+                                    txtNombreProducto.getText(),
+                                    (String)comboCategoria.getSelectedItem(),
+                                    Double.parseDouble(txtPrecio.getText())
+                    
+        ));
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**
@@ -232,5 +246,14 @@ public class GestorProductos extends javax.swing.JFrame {
         modelo.addColumn("Categoría");
         modelo.addColumn("Precio");
         tablaProductos.setModel(modelo);
+    }
+    
+    private void cargarDatos(Producto producto){
+        modelo.addRow(new Object[]{
+                                    producto.getNombreProducto(),
+                                    producto.getCategoria(),
+                                    producto.getPrecio()}
+        );
+        
     }
 }
