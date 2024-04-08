@@ -4,14 +4,23 @@
  */
 package gestionaproductos;
 
+import java.util.InputMismatchException;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 
 /**
  *
  * @author adam
  */
 public class GestorProductos extends javax.swing.JFrame {
+
     private DefaultTableModel modelo = new DefaultTableModel();
 
     /**
@@ -20,6 +29,7 @@ public class GestorProductos extends javax.swing.JFrame {
     public GestorProductos() {
         initComponents();
         armarCabecera();
+//        txtPrecio = crearCampoNumerico();
     }
 
     /**
@@ -168,48 +178,45 @@ public class GestorProductos extends javax.swing.JFrame {
     private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
         char caracter = evt.getKeyChar();
         String txtActual;
-                
-        if(caracter == '.'){
+
+        if (caracter == '.') {
             txtActual = txtPrecio.getText();
-            for(int i=0; i < txtActual.length(); i++){
-                if(txtActual.charAt(i) == '.'){
+            for (int i = 0; i < txtActual.length(); i++) {
+                if (txtActual.charAt(i) == '.') {
                     evt.consume();
                     return;
                 }
             }
-            
+
             return;
         }
-        
-        if(!Character.isDigit(caracter)){
+
+        if (!Character.isDigit(caracter)) {
             evt.consume();
         }
     }//GEN-LAST:event_txtPrecioKeyTyped
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         String nombreProducto = txtNombreProducto.getText();
-        String categoria = (String)comboCategoria.getSelectedItem();
-        
-        
-        if(nombreProducto.isBlank() ||
-                categoria.isBlank() ||
-                txtPrecio.getText().isBlank()
-          ){
+        String categoria = (String) comboCategoria.getSelectedItem();
+
+        if (nombreProducto.isBlank()
+                || categoria.isBlank()
+                || txtPrecio.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Tenés que ingresar datos en todos los campos");
             return;
         }
         double precio = Double.parseDouble(txtPrecio.getText());
-        if(precio <= 0){
+        if (precio <= 0) {
             JOptionPane.showMessageDialog(this, "El precio tiene que ser mayor que cero");
         }
-        
+
         cargarDatos(new Producto(
-                                    nombreProducto,
-                                    categoria,
-                                    precio)
-                    
+                nombreProducto,
+                categoria,
+                precio)
         );
-        
+
         resetearCampos();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -260,26 +267,153 @@ public class GestorProductos extends javax.swing.JFrame {
     private javax.swing.JTextField txtNombreProducto;
     private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
-    
-    private void armarCabecera(){
+
+    private void armarCabecera() {
         modelo.addColumn("Nombre");
         modelo.addColumn("Categoría");
         modelo.addColumn("Precio");
         tablaProductos.setModel(modelo);
     }
-    
-    private void cargarDatos(Producto producto){
+
+    private void cargarDatos(Producto producto) {
         modelo.addRow(new Object[]{
-                                    producto.getNombreProducto(),
-                                    producto.getCategoria(),
-                                    producto.getPrecio()}
+            producto.getNombreProducto(),
+            producto.getCategoria(),
+            producto.getPrecio()}
         );
-        
+
     }
-    
-    private void resetearCampos(){
+
+    private void resetearCampos() {
         txtNombreProducto.setText("");
         comboCategoria.setSelectedIndex(0);
         txtPrecio.setText("");
+    }
+
+    // FIXME: Regex filtro para tratar el caso de validar datos cuando copiamos y pegamos numeros
+    private static JTextField crearCampoNumerico() {
+        JTextField campoNumerico = new JTextField(20);
+        PlainDocument documento = new PlainDocument();
+        documento.setDocumentFilter(new DocumentFilter() {
+            private Pattern pattern = Pattern.compile("\\d*\\.?\\d*");
+
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string.matches("^\\d+(\\.\\d{1,2})?$")) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text.matches("^\\d+(\\.\\d{1,2})?$*")) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
+
+        campoNumerico.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                staticTxtPrecioKeyTyped(evt, campoNumerico.getText());
+            }
+        });
+
+        campoNumerico.setDocument(documento);
+        return campoNumerico;
+    }
+
+    private static void staticTxtPrecioKeyTyped(java.awt.event.KeyEvent evt, String txtActual) {
+        char caracter = evt.getKeyChar();
+
+        if (caracter == '.') {
+            for (int i = 0; i < txtActual.length(); i++) {
+                if (txtActual.charAt(i) == '.') {
+                    evt.consume();
+                    return;
+                }
+            }
+
+            return;
+        }
+
+        if (!Character.isDigit(caracter)) {
+            evt.consume();
+        }
+    }
+
+    // Ejemplo de JTextField.java para poner un campo en mayuscula, incluso si copiamos y pegamos el texto
+    public class UpperCaseField extends JTextField {
+
+        public UpperCaseField(int cols) {
+            super(cols);
+        }
+
+        protected Document createDefaultModel() {
+            return new UpperCaseDocument();
+        }
+
+        static class UpperCaseDocument extends PlainDocument {
+
+            public void insertString(int offs, String str, AttributeSet a)
+                    throws BadLocationException {
+
+                if (str == null) {
+                    return;
+                }
+                char[] upper = str.toCharArray();
+                for (int i = 0; i < upper.length; i++){
+                    upper[i] = Character.toUpperCase(upper[i]);
+                }
+                super.insertString(offs, new String(upper), a);
+            }
+        }
+    }
+    // Adaptar UpperCaseField ejemplo de JTextField.java a un campo numerico
+    public class CampoNumerico extends JTextField {
+
+        public CampoNumerico(int cols) {
+            super(cols);
+        }
+
+        protected Document createDefaultModel() {
+            return new DocumentoNumerico();
+        }
+
+        static class DocumentoNumerico extends PlainDocument {
+
+            public void insertString(int offs, String str, AttributeSet a)
+                    throws BadLocationException, InputMismatchException {
+
+                if (str == null) {
+                    return;
+                }
+                char separadorDecimal = '.';
+                int contDecimal = 0;
+                boolean esNumero = true;
+                
+                for (int i = 0; i < str.length(); i++) {
+                    if (!Character.isDigit(str.charAt(i))){
+                        if (str.charAt(i) == separadorDecimal) {
+                            contDecimal++;
+                            if(contDecimal > 1){
+                                esNumero = false;
+                                break;
+                            }
+                        }else{
+                            esNumero = false;
+                            break;
+                        }
+                    }
+                }
+                if(esNumero){
+                    char[] numChars = str.toCharArray();
+                    super.insertString(offs, new String(numChars), a);
+                }else{
+                    super.insertString(offs, new String(), a);
+                    throw new InputMismatchException("Tiene que ser un numero");
+                }
+            }
+        }
     }
 }
