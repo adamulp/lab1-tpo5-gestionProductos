@@ -29,6 +29,7 @@ public class GestorProductos extends javax.swing.JFrame {
     public GestorProductos() {
         initComponents();
         armarCabecera();
+//        javax.swing.JTextField txtPrecio = new CampoNumerico(20);
 //        txtPrecio = crearCampoNumerico();
     }
 
@@ -177,12 +178,13 @@ public class GestorProductos extends javax.swing.JFrame {
 
     private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
         char caracter = evt.getKeyChar();
+        char separadorDecimal = '.';
         String txtActual;
 
-        if (caracter == '.') {
+        if (caracter == separadorDecimal) {
             txtActual = txtPrecio.getText();
             for (int i = 0; i < txtActual.length(); i++) {
-                if (txtActual.charAt(i) == '.') {
+                if (txtActual.charAt(i) == separadorDecimal) {
                     evt.consume();
                     return;
                 }
@@ -190,10 +192,31 @@ public class GestorProductos extends javax.swing.JFrame {
 
             return;
         }
-
+        
+        
         if (!Character.isDigit(caracter)) {
             evt.consume();
         }
+        
+        txtActual = txtPrecio.getText();
+        int posDecimal = -1;
+        int i = 0;
+        while (i < txtActual.length() && posDecimal < 0){
+             if(txtActual.charAt(i) == separadorDecimal){
+                 posDecimal = i;
+             }
+            i++;
+        }
+        if(posDecimal < 0){
+            return;
+        }
+        if(txtPrecio.getCaretPosition() < posDecimal){
+            return;
+        }
+        if(txtPrecio.getCaretPosition() - posDecimal > 2){
+            evt.consume();
+        }
+        
     }//GEN-LAST:event_txtPrecioKeyTyped
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
