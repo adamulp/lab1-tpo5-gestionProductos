@@ -14,6 +14,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -79,6 +80,9 @@ public class GestorProductos extends javax.swing.JFrame {
             }
         });
         txtPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPrecioKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtPrecioKeyTyped(evt);
             }
@@ -180,7 +184,7 @@ public class GestorProductos extends javax.swing.JFrame {
         char caracter = evt.getKeyChar();
         char separadorDecimal = '.';
         String txtActual;
-
+       
         if (caracter == separadorDecimal) {
             txtActual = txtPrecio.getText();
             for (int i = 0; i < txtActual.length(); i++) {
@@ -218,11 +222,11 @@ public class GestorProductos extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_txtPrecioKeyTyped
-
+   
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         String nombreProducto = txtNombreProducto.getText();
         String categoria = (String) comboCategoria.getSelectedItem();
-
+        
         if (nombreProducto.isBlank()
                 || categoria.isBlank()
                 || txtPrecio.getText().isBlank()) {
@@ -233,7 +237,7 @@ public class GestorProductos extends javax.swing.JFrame {
         if (precio <= 0) {
             JOptionPane.showMessageDialog(this, "El precio tiene que ser mayor que cero");
         }
-
+             
         cargarDatos(new Producto(
                 nombreProducto,
                 categoria,
@@ -242,6 +246,13 @@ public class GestorProductos extends javax.swing.JFrame {
 
         resetearCampos();
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void txtPrecioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && (evt.getKeyCode() == KeyEvent.VK_V)) {
+        evt.consume();
+    }
+    }//GEN-LAST:event_txtPrecioKeyPressed
 
     /**
      * @param args the command line arguments
@@ -312,5 +323,5 @@ public class GestorProductos extends javax.swing.JFrame {
         comboCategoria.setSelectedIndex(0);
         txtPrecio.setText("");
     }
-
+    
 }
