@@ -182,9 +182,9 @@ public class GestorProductos extends javax.swing.JFrame {
 
     private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
         char caracter = evt.getKeyChar();
-        char separadorDecimal = '.';
+        char separadorDecimal = ',';
         String txtActual;
-       
+
         if (caracter == separadorDecimal) {
             txtActual = txtPrecio.getText();
             for (int i = 0; i < txtActual.length(); i++) {
@@ -224,20 +224,34 @@ public class GestorProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioKeyTyped
    
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        String nombreProducto = txtNombreProducto.getText();
+     String nombreProducto = txtNombreProducto.getText();
         String categoria = (String) comboCategoria.getSelectedItem();
-        
+      
+
         if (nombreProducto.isBlank()
                 || categoria.isBlank()
                 || txtPrecio.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Tenés que ingresar datos en todos los campos");
             return;
         }
-        double precio = Double.parseDouble(txtPrecio.getText());
+        
+        char[] charPrecio=txtPrecio.getText().toCharArray();
+               
+        for (int i = 0; i < charPrecio.length; i++) {
+            if (charPrecio[i] == ',') {
+                charPrecio[i] = '.';
+            }
+        }
+        
+        String strPrecio = String.valueOf(charPrecio);
+
+       double precio = Double.parseDouble(strPrecio);
+       
         if (precio <= 0) {
             JOptionPane.showMessageDialog(this, "El precio tiene que ser mayor que cero");
         }
-             
+
+    
         cargarDatos(new Producto(
                 nombreProducto,
                 categoria,
@@ -310,10 +324,11 @@ public class GestorProductos extends javax.swing.JFrame {
     }
 
     private void cargarDatos(Producto producto) {
-        modelo.addRow(new Object[]{
+         modelo.addRow(new Object[]{
             producto.getNombreProducto(),
             producto.getCategoria(),
-            producto.getPrecio()}
+            String.format("%.2f", producto.getPrecio() // Le damos formato al resultado para que muestre solo 2 dígitos después de la coma.
+            )}
         );
 
     }
