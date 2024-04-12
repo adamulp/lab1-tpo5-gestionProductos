@@ -327,10 +327,8 @@ public class GestorProductos extends javax.swing.JFrame {
          modelo.addRow(new Object[]{
             producto.getNombreProducto(),
             producto.getCategoria(),
-            String.format("%.2f", producto.getPrecio() // Le damos formato al resultado para que muestre solo 2 dígitos después de la coma.
-            )}
-        );
-
+            String.format("%.2f", producto.getPrecio()).replace('.', ',') // Le damos formato al resultado para que muestre solo 2 dígitos después de la coma.
+            });
     }
 
     private void resetearCampos() {
