@@ -14,7 +14,13 @@ import java.awt.event.KeyEvent;
  */
 public class GestorProductos extends javax.swing.JFrame {
 
-    private DefaultTableModel modelo = new DefaultTableModel();
+    private DefaultTableModel modelo = new DefaultTableModel(){
+        @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make all cells read-only
+                return false;
+            }
+    };
 
     /**
      * Creates new form GestorProductos
@@ -106,7 +112,8 @@ public class GestorProductos extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tablaProductos.setColumnSelectionAllowed(true);
+        tablaProductos.setCellSelectionEnabled(false);
+        tablaProductos.setRowSelectionAllowed(true);
         jScrollPane1.setViewportView(tablaProductos);
         tablaProductos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
